@@ -1,7 +1,7 @@
-name: "semb"
+name: semb
 output_dir: ../docs
 navbar:
-  title: "semb"
+  title: semb
   left:
   - text: Home
     href: index.html
@@ -9,6 +9,10 @@ navbar:
     href: about.html
   - text: License
     href: license.html
+  right:
+  - icon: fa-github
+    text: Source code
+    href: https://github.com/githubz0r/semb
 output:
   workflowr::wflow_html:
     toc: yes
