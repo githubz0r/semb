@@ -1,0 +1,388 @@
+---
+title: "first_steps"
+author: "Githubz0r"
+date: "2/13/2020"
+output: html_document
+---
+
+## preparation
+Load data and packages. We'll just both the data set with numCon/numEnds annotated by Silja and the one annotated by me.
+```{r}
+library(tidyverse)
+library(irlba)
+library(magrittr)
+library(cowplot)
+pancrea_holes_all <- read.csv('/Users/Deathvoodoo/Documents/semb_int/TableTilLars.csv')
+pancrea_holes_altered <- read.csv('/Users/Deathvoodoo/Documents/semb_int/table_2_full.csv')
+pancrea_holes_1 <- pancrea_holes_all[names(pancrea_holes_all)!='hole_area_raw'] %>% na.omit
+pancrea_holes_2 <- pancrea_holes_altered[names(pancrea_holes_altered)!='hole_area_raw'] %>% na.omit
+```
+
+## analysis
+First some plots
+We just quickly visualize dAdt as a function of each predictor.
+```{r}
+predictors_1 <- c("numCon", "numEnds", "period", "hole_area_smooth", "eccentricity", "solidity")
+predictors_2 <- c("numCon", "numEnds", "period", "hole_area_smooth", "eccentricity", "solidity")
+#predictors_3 <- c("numCon", "numEnds", "period", "hole_area_smooth", "eccentricity", "solidity", "time_point")
+pancrea_1_norm <- pancrea_holes_1 %>% lapply(function(x){if (x[1] %>% is.numeric()) {x/sd(x)} else{x}}) %>% as.data.frame()
+pancrea_2_norm <- pancrea_holes_2 %>% lapply(function(x){if (x[1] %>% is.numeric()) {x/sd(x)} else{x}}) %>% as.data.frame()
+
+pancrea_1_norm_long <- pancrea_1_norm %>% pivot_longer(cols=predictors_1, names_to='predictors')
+pancrea_2_norm_long <- pancrea_2_norm %>% pivot_longer(cols=predictors_2, names_to='predictors')
+
+pancrea_1_norm_long %>% ggplot(aes(x=value, y=dAdt, col=predictors))+geom_point(size=0.2, alpha=0.5)
+pancrea_2_norm_long %>% ggplot(aes(x=value, y=dAdt, col=predictors))+geom_point(size=0.2, alpha=0.5)
+```
+
+Now we do some PCA plots, with and without scaling the variances. We color both by hole and dataset to get an overview of how our points are lying together.
+```{r}
+DoIrlbaPCA <- function(data.mat, predictor.names, make.plots=T){
+  panc.pca.unscaled <- irlba::prcomp_irlba(data.mat[predictor.names], n=2)
+  panc.pca.scaled <- irlba::prcomp_irlba(data.mat[predictor.names], n=2, scale.=T)
+  if(make.plots){
+    panc.pca.unscaled.df <- setNames(panc.pca.unscaled$x %>% as.data.frame, c('PC1', 'PC2')) %>% bind_cols(data.mat[setdiff(names(data.mat), predictor.names)])
+    panc.pca.scaled.df <- setNames(panc.pca.scaled$x %>% as.data.frame, c('PC1', 'PC2')) %>% bind_cols(data.mat[setdiff(names(data.mat), predictor.names)])
+    phole.unscaled <- panc.pca.unscaled.df %>% ggplot(aes(x=PC1, y=PC2, col=as.factor(hole_num_rep), shape=data_set_name))+geom_point(alpha=0.5)+guides(col = guide_legend(ncol = 3))
+    phole.scaled <- panc.pca.scaled.df %>% ggplot(aes(x=PC1, y=PC2, col=as.factor(hole_num_rep), shape=data_set_name))+geom_point(alpha=0.5)+guides(col = guide_legend(ncol = 3))
+    pdataset.scaled <- panc.pca.scaled.df %>% ggplot(aes(x=PC1, y=PC2, col=data_set_name))+geom_point(alpha=0.5)+guides(col = guide_legend(ncol = 3))
+  }
+  return(list(panc.pca.unscaled=panc.pca.unscaled, panc.pca.scaled=panc.pca.scaled, phole.unscaled=phole.unscaled, phole.scaled=phole.scaled, 
+              pdataset.scaled=pdataset.scaled))
+}
+
+pancrea_1_pca <- DoIrlbaPCA(pancrea_holes_1, predictors_1)
+pancrea_2_pca <- DoIrlbaPCA(pancrea_holes_2, predictors_2)
+
+pancrea_1_pca$phole.scaled
+pancrea_1_pca$pdataset.scaled
+
+pancrea_2_pca$phole.scaled
+pancrea_2_pca$pdataset.scaled
+```
+Check weights of the features in the rotation matrices
+```{r}
+predictors_2 %>% setNames(1:length(predictors_2), .)
+pancrea_1_pca$panc.pca.scaled$rotation
+pancrea_2_pca$panc.pca.scaled$rotation
+```
+
+
+We check distribution of dAdt. Of course, for fitting a linear model (with gaussian noise) we assume that the data is normally distributed, so it better be.
+```{r}
+qplot(pancrea_holes_1$dAdt)
+```
+
+
+Check correlation between variables, both as scatter plot and heat map.
+```{r}
+MakeCorrelationPlots <- function(data.matrix){
+  corr.mat <- cor(data.matrix)
+  corr.values <- corr.mat; corr.values[upper.tri(corr.values, diag=T)] <- NA
+  corr.values <- corr.values %>% reshape2::melt() %>% na.omit %>% transmute(which_factors=paste0(Var1,"+", Var2), correlation=value)
+  pcor.scatter <- corr.values %>% ggplot(aes(x=which_factors, y=correlation))+geom_point()+theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  pcor.heat <- corr.mat %>% reshape2::melt() %>% ggplot(aes(x=Var1, y=Var2, fill=value))+geom_tile()+scale_fill_continuous(high = "#132B43", low = "#56B1F7")+
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  return(list(pcor.scatter=pcor.scatter, pcor.heat=pcor.heat))
+}
+corplot_1 <- MakeCorrelationPlots(pancrea_holes_1[c('dAdt', predictors_1)])
+corplot_2 <- MakeCorrelationPlots(pancrea_holes_2[c('dAdt', predictors_2)])
+
+corplot_1$pcor.scatter
+corplot_1$pcor.heat
+corplot_2$pcor.scatter
+corplot_2$pcor.heat
+```
+
+
+Now we start fitting some models. We first try all the variables. Note that we are omitting dEdt because Silja said it's not important and also numEnds_over_numCon since it's very highly correlation with numEnds
+```{r}
+cor(pancrea_holes_1$numEnds, pancrea_holes_1$numEnds_over_numCon)
+```
+
+The third model will be including the time, i.e. the time in the video annotated by me.
+```{r}
+linmodel_1 <- lm(dAdt~numCon + numEnds + period + hole_area_smooth + eccentricity + solidity, data = pancrea_holes_1)
+linmodel_2 <- lm(dAdt~numCon + numEnds + period + hole_area_smooth + eccentricity + solidity, data = pancrea_holes_2)
+linmodel_time <- lm(dAdt~numCon + numEnds + period + hole_area_smooth + eccentricity + solidity + time_point, data = pancrea_holes_2)
+```
+
+Diagnostic plots of the models. Things definitely do not look iid/evenly distribution noise/homoskedastic
+```{r}
+plot(linmodel_1)
+plot(linmodel_2)
+plot(linmodel_time)
+```
+
+We print some summaries of the models. This gives some various statistical info, such as e.g. weight estimates, p values when doing some kind of t-test of the weights (with null hypothesis that they are equal to zero). This gives similar values to doing a likelihood ratio test where the nested model lacks that coefficient. Note that the models are all complete trash, judging by the R^2 values.
+```{r}
+summary(linmodel_1)
+summary(linmodel_2)
+summary(linmodel_time)
+```
+
+Just testing linmodel_time vs the nested model linmodel_2 (and we can also do some aic). We see that time basically sucks. 
+```{r}
+anova(linmodel_2, linmodel_time)
+AIC(linmodel_2) - AIC(linmodel_time) # should be positive if linmodel 3 is better
+```
+
+Is our model even better than just random shit? We can make some random data frames and see.
+```{r}
+RandomizeDataframe <- function(df){
+  df.random <- df %>% lapply(function(x){sample(x)}) %>% as.data.frame
+  return(df.random)
+}
+
+random_pancreas <- replicate(100, RandomizeDataframe(pancrea_holes_1), simplify = FALSE)
+```
+
+Let's test the random data frames
+```{r}
+random_results <- random_pancreas %>% lapply(function(x){
+  linmodel.random <- lm(dAdt~numCon + numEnds + period + hole_area_smooth + eccentricity + solidity, data = x)
+  random.lm.summary <- summary(linmodel.random)
+  residual.standard.error <- random.lm.summary$sigma
+  r.squared <- random.lm.summary$r.squared
+  r.squared.adjusted <- random.lm.summary$adj.r.squared
+  sum.squared.resids <- sum(residuals(linmodel.random)^2)
+  return(c(residual.standard.error=residual.standard.error, r.squared=r.squared, 
+           r.squared.adjusted=r.squared.adjusted, sum.squared.resids=sum.squared.resids))
+})
+
+output_values_random <-random_results[[1]] %>% names %>% lapply(function(x){
+  value.for.all.res <- random_results %>% lapply(function(result.vector){result.vector[[x]] %>% unname})
+  return(value.for.all.res)
+}) %>% lapply(unlist); output_values_random %<>% setNames(random_results[[1]] %>% names)
+
+output_values_random$residual.standard.error %>% qplot
+output_values_random$r.squared %>% qplot
+output_values_random$r.squared.adjusted %>% qplot
+output_values_random$sum.squared.resids %>% qplot
+```
+We compare mean values from randomized data frames with the values for the first linear model. It's a little bit better.
+```{r}
+output_values_random %>% lapply(mean) %>% unlist
+summary(linmodel_1)
+sum(residuals(linmodel_1)^2)
+```
+
+Now we can do some stepwise linear regression with different R packages, using AIC/BIC as criteria.
+```{r}
+library(MASS)
+library(leaps)
+```
+
+First using MASS
+```{r}
+step_mass_bi <- stepAIC(linmodel_1, direction='both')
+summary(step_mass_bi)
+```
+We can try putting in a model with second order interactions and see what happens.
+```{r}
+step_mass_squared_bi <- stepAIC(lm(dAdt~.^2, data = pancrea_holes_1[c('dAdt', predictors_1)]), direction='both')
+summary(step_mass_squared_bi)
+```
+Gives better adjusted R squared fo sho.
+
+
+Using leaps package
+```{r}
+models_leap <- regsubsets(dAdt~., data = pancrea_holes_1[c('dAdt', predictors_1)], nvmax = 7,
+                     method = "seqrep")
+
+summary_leap <- summary(models_leap)
+summary_leap
+summary_leap$bic
+```
+
+Doing both forwards and backwards just because.
+```{r}
+models_forward <- regsubsets(dAdt~., data = pancrea_holes_1[c('dAdt', predictors_1)], nvmax = 7,
+                     method = "forward")
+
+summary_forward <- summary(models_forward)
+summary_forward
+summary_forward$bic
+```
+
+```{r}
+models_backward <- regsubsets(dAdt~., data = pancrea_holes_1[c('dAdt', predictors_1)], nvmax = 7,
+                     method = "backward")
+
+summary_backward <- summary(models_backward)
+summary_backward
+summary_backward$bic
+```
+
+We can try higher order model, see wut happens.
+```{r}
+Nsquaredpermutations <- function(n.features){ # since the regsubsets function has a max number of variables, we just put in the maximum number of possible variables of 2nd order
+  return((n.features^2-n.features)/2 + n.features + 1)
+}
+models_leap_square <- regsubsets(dAdt~.^2, data = pancrea_holes_1[c('dAdt', predictors_1)], nvmax = Nsquaredpermutations(length(predictors_1)),
+                     method = "seqrep")
+
+summary_leap_square <- summary(models_leap_square)
+summary_leap_square
+summary_leap_square$bic
+```
+
+I.e. the interaction model with the lowest bic is 
+```{r}
+which(summary_leap_square$bic==min(summary_leap_square$bic))
+```
+We extract the variables of this model and put it into lm
+```{r}
+interaction_str <- summary_leap_square$outmat[12, ][summary_leap_square$outmat[12, ]=='*'] %>% names %>% paste(., collapse='+') %>% paste0('dAdt~','',.)
+linmodel_interaction_leaps <- lm(as.formula(interaction_str), data=pancrea_holes_1)
+```
+
+```{r}
+summary(linmodel_interaction_leaps)
+AIC(linmodel_interaction_leaps)
+BIC(linmodel_interaction_leaps)
+plot(linmodel_interaction_leaps)
+```
+Yeah, improved adjusted R squared fo sho.
+
+Btw, which rows were removed by na.omit?
+```{r}
+removed_rows_bool <- pancrea_holes_all[names(pancrea_holes_all)!='hole_area_raw'] %>% apply(1, function(row){
+  return((row %>% sapply(function(x){is.na(x)}) %>% sum())>0)
+})
+removed_rows <- pancrea_holes_all[removed_rows_bool, ]
+table(removed_rows$hole_num_rep)
+table(pancrea_holes_all$hole_num_rep) # 21 and 23 are completely removed by the filtering due to NaNs in period
+```
+
+
+Check similarity between me and siljas counts, using zero-one loss and squared loss.
+```{r}
+Zeroone <- function(v1, v2){
+  return(1-sum(v1==v2)/length(v1))
+}
+
+Squarederror <- function(v1, v2){
+  sq.loss <- sum((v1-v2)^2)/length(v1)
+  return(sq.loss)
+}
+
+Squarederror(split(pancrea_holes_1$numEnds, pancrea_holes_1$hole_num_rep)$`22`, split(pancrea_holes_2$numEnds, pancrea_holes_2$hole_num_rep)$`22`) # sanity check
+
+CalcError <- function(df1, df2, vectors.to.split, split.by='hole_num_rep'){
+  calcerrors <- function(v1, v2){
+    return(c(zeroone=Zeroone(v1, v2), squarederror=Squarederror(v1, v2)))
+  }
+  sub.dfs.by.factor <- vectors.to.split %>% lapply(function(vector.name){
+    df1.split <- df1[[vector.name]] %>% split(df1[[split.by]])
+    df2.split <- df2[[vector.name]] %>% split(df2[[split.by]])
+    return(list(df1.split = df1.split, df2.split = df2.split))
+  })
+  sub.dfs.by.factor %<>% setNames(vectors.to.split)
+  errors.by.factor <- sub.dfs.by.factor %>% lapply(function(data.list){
+    errors.by.split <- Map(calcerrors, data.list[[1]], data.list[[2]])
+    return(errors.by.split)
+  })
+  errors.by.factor <- errors.by.factor %>% lapply(function(x){do.call(rbind,x)}) %>% lapply(as.data.frame) %>% lapply(tibble::rownames_to_column, var='hole')
+  errors.df <- dplyr::bind_rows(errors.by.factor, .id='compared_factor')
+  average.errors <- vectors.to.split %>% sapply(function(vector.name){
+    return(calcerrors(df1[[vector.name]], df2[[vector.name]]))
+  })
+  return(list(errors.df=errors.df, average.errors=average.errors))
+}
+```
+
+```{r}
+error_pancrea <- CalcError(pancrea_holes_1, pancrea_holes_2, c('numCon', 'numEnds'))
+error_pancrea$errors.df %>% ggplot((aes(x=as.factor(as.numeric(hole)), y=zeroone, col=compared_factor)))+
+  theme(axis.text.x = element_text(angle = -90, hjust = 1))+geom_jitter()
+error_pancrea$errors.df %>% ggplot((aes(x=as.factor(as.numeric(hole)), y=squarederror, col=compared_factor)))+
+  theme(axis.text.x = element_text(angle = -90, hjust = 1))+geom_jitter()
+```
+
+quick plot of fitted vs real values for the various models
+```{r}
+plot(linmodel_1$fitted.values~pancrea_holes_1$dAdt)
+plot(step_mass_squared_bi$fitted.values~pancrea_holes_1$dAdt)
+plot(linmodel_interaction_leaps$fitted.values~pancrea_holes_1$dAdt)
+```
+
+Let's also just check the correlations
+```{r}
+cor(linmodel_1$fitted.values, pancrea_holes_1$dAdt)
+cor(step_mass_squared_bi$fitted.values, pancrea_holes_1$dAdt)
+cor(linmodel_interaction_leaps$fitted.values, pancrea_holes_1$dAdt)
+```
+
+
+
+We can also try to down sample to circumvent IID assumption violation
+```{r}
+Sampleintervals <- function(df, interval.length, offset=0){
+  start.from <- 1+offset
+  n <- nrow(df)
+  if(start.from>=n || interval.length >=n){
+    indices <- sample(n, 1)
+  } else {
+    indices <- seq(start.from, n, interval.length)
+  }
+  return(df[indices, ])
+}
+
+Makedownsampled <- function(df, interval.length, split.by='hole_num_rep', offset=0){
+  sub.dfs <- df %>% split(df[[split.by]])
+  downsampled.dfs <- sub.dfs %>% lapply(function(x){return(Sampleintervals(x, interval.length=interval.length, offset=offset))})
+  downsampled.rbound <- dplyr::bind_rows(downsampled.dfs)
+  return(downsampled.rbound)
+}
+
+downsampled_df <- Makedownsampled(pancrea_holes_1, 5, 'hole_num_rep')
+linmodel_downsampled <- lm(dAdt~numCon + numEnds + period + hole_area_smooth + eccentricity + solidity, data = downsampled_df)
+```
+
+```{r}
+plot(linmodel_downsampled)
+```
+
+```{r}
+summary(linmodel_downsampled)
+```
+Things look less fucked, but we have less statistical power now. Quickly check pred vs true plot and correlation. The results are less nighmarish looking but clearly linear model is insufficient.
+```{r}
+plot(linmodel_downsampled$fitted.values~downsampled_df$dAdt)
+cor(linmodel_downsampled$fitted.values, downsampled_df$dAdt)
+```
+
+
+We can try different offsets during the sampling (sampling 1 random point from the hole if offset >= n_hole)
+```{r}
+offsets_ <- c(0, 5, 10, 20, 30, 50)
+dfs_offsets <- offsets_ %>% lapply(function(x, interval.length=20){
+  df.downsampled <- Makedownsampled(pancrea_holes_1, interval.length, offset=x)
+  return(df.downsampled)
+})
+
+linmodels_offsets <- dfs_offsets %>% lapply(function(x){
+  lm.downsampled <- lm(dAdt~numCon + numEnds + period + hole_area_smooth + eccentricity + solidity, data = x)
+  return(lm.downsampled)
+})
+
+```
+
+```{r}
+offset_residplots <- linmodels_offsets %>% lapply(function(x){
+  return(plot(x, which=c(1,1)))
+})
+```
+
+summaries of the models
+```{r}
+linmodels_offsets %>% lapply(summary)
+```
+
+(remember that permutation matrix cancels out in formula to linear regression)
+```{r}
+quicktest <- lm(dAdt~numCon + numEnds + period + hole_area_smooth + eccentricity + solidity, data = pancrea_holes_1[sample(1:nrow(pancrea_holes_1)), ])
+```
+
