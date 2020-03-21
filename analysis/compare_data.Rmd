@@ -23,8 +23,8 @@ First some plots
 We just quickly visualize dAdt as a function of each predictor.
 ```{r}
 predictors_1 <- c("numCon", "numEnds", "period", "hole_area_smooth", "eccentricity", "solidity")
-predictors_2 <- c("numCon", "numEnds", "period", "hole_area_smooth", "eccentricity", "solidity")
-#predictors_3 <- c("numCon", "numEnds", "period", "hole_area_smooth", "eccentricity", "solidity", "time_point")
+predictors_2 <- c("numCon", "numEnds", "period", "hole_area_smooth", "eccentricity", "solidity") # same as predictors 1 but originally meant to include time
+#predictors_2 <- c("numCon", "numEnds", "period", "hole_area_smooth", "eccentricity", "solidity", "time_point")
 pancrea_1_norm <- pancrea_holes_1 %>% lapply(function(x){if (x[1] %>% is.numeric()) {x/sd(x)} else{x}}) %>% as.data.frame()
 pancrea_2_norm <- pancrea_holes_2 %>% lapply(function(x){if (x[1] %>% is.numeric()) {x/sd(x)} else{x}}) %>% as.data.frame()
 
@@ -37,51 +37,60 @@ pancrea_2_norm_long %>% ggplot(aes(x=value, y=dAdt, col=predictors))+geom_point(
 
 Now we do some PCA plots, with and without scaling the variances. We color both by hole and dataset to get an overview of how our points are lying together.
 ```{r}
-DoIrlbaPCA <- function(data.mat, predictor.names, make.plots=T){
-  panc.pca.unscaled <- irlba::prcomp_irlba(data.mat[predictor.names], n=2)
-  panc.pca.scaled <- irlba::prcomp_irlba(data.mat[predictor.names], n=2, scale.=T)
+DoPCA <- function(data.mat, predictor.names, make.plots=T, get.percent.variance=T, scale=T){
+  panc.pca <- prcomp(data.mat[predictor.names], scale.=scale)
   if(make.plots){
-    panc.pca.unscaled.df <- setNames(panc.pca.unscaled$x %>% as.data.frame, c('PC1', 'PC2')) %>% bind_cols(data.mat[setdiff(names(data.mat), predictor.names)])
-    panc.pca.scaled.df <- setNames(panc.pca.scaled$x %>% as.data.frame, c('PC1', 'PC2')) %>% bind_cols(data.mat[setdiff(names(data.mat), predictor.names)])
-    phole.unscaled <- panc.pca.unscaled.df %>% ggplot(aes(x=PC1, y=PC2, col=as.factor(hole_num_rep), shape=data_set_name))+geom_point(alpha=0.5)+guides(col = guide_legend(ncol = 3))
-    phole.scaled <- panc.pca.scaled.df %>% ggplot(aes(x=PC1, y=PC2, col=as.factor(hole_num_rep), shape=data_set_name))+geom_point(alpha=0.5)+guides(col = guide_legend(ncol = 3))
-    pdataset.scaled <- panc.pca.scaled.df %>% ggplot(aes(x=PC1, y=PC2, col=data_set_name))+geom_point(alpha=0.5)+guides(col = guide_legend(ncol = 3))
+    variances <- panc.pca$sdev^2
+    PC.strings <- paste0('PC', '', 1:length(predictor.names))
+    col.names <- paste0(PC.strings, ", % variance: ", 100*round(variances/sum(variances), digits = 4))
+    panc.pca.df <- setNames(panc.pca$x %>% as.data.frame, col.names) %>% bind_cols(data.mat[setdiff(names(data.mat), predictor.names)])
+    phole.scaled <- panc.pca.df %>% ggplot(aes(x=!!as.symbol(col.names[1]), y=!!as.symbol(col.names[2]), col=as.factor(hole_num_rep),
+                                               shape=data_set_name))+geom_point(alpha=0.5)+guides(col = guide_legend(ncol = 3))
+    pdataset.scaled <- panc.pca.df %>% ggplot(aes(x=!!as.symbol(col.names[1]), y=!!as.symbol(col.names[2]), col=data_set_name))+
+      geom_point(alpha=0.5)+guides(col = guide_legend(ncol = 3))
   }
-  return(list(panc.pca.unscaled=panc.pca.unscaled, panc.pca.scaled=panc.pca.scaled, phole.unscaled=phole.unscaled, phole.scaled=phole.scaled, 
-              pdataset.scaled=pdataset.scaled))
+  return(list(panc.pca=panc.pca, phole.scaled=phole.scaled, pdataset.scaled=pdataset.scaled))
 }
 
-pancrea_1_pca <- DoIrlbaPCA(pancrea_holes_1, predictors_1)
-pancrea_2_pca <- DoIrlbaPCA(pancrea_holes_2, predictors_2)
+pancrea_1_pca <- DoPCA(pancrea_holes_1, predictors_1)
+pancrea_2_pca <- DoPCA(pancrea_holes_2, predictors_2)
 
 pancrea_1_pca$phole.scaled
 pancrea_1_pca$pdataset.scaled
 
 pancrea_2_pca$phole.scaled
 pancrea_2_pca$pdataset.scaled
+
+ggsave('/Users/Deathvoodoo/Documents/semb_int/pca_hole.png', pancrea_1_pca$phole.scaled)
+ggsave('/Users/Deathvoodoo/Documents/semb_int/pca_dataset.png', pancrea_1_pca$pdataset.scaled)
 ```
+
+
 Check weights of the features in the rotation matrices
 ```{r}
 predictors_2 %>% setNames(1:length(predictors_2), .)
-pancrea_1_pca$panc.pca.scaled$rotation
-pancrea_2_pca$panc.pca.scaled$rotation
+pancrea_1_pca$panc.pca$rotation
+pancrea_2_pca$panc.pca$rotation
 ```
 
 
-We check distribution of dAdt. Of course, for fitting a linear model (with gaussian noise) we assume that the data is normally distributed, so it better be.
+We check distribution of dAdt visually and with shapiro wilk test. Of course, for fitting a linear model (with gaussian noise) we assume that the data is normally distributed, so it better be.
 ```{r}
-qplot(pancrea_holes_1$dAdt)
+hist(pancrea_holes_1$dAdt, breaks = 50, prob=T)
+lines(density(pancrea_holes_1$dAdt), col = "blue")
+shapiro.test(pancrea_holes_1$dAdt)
 ```
 
 
-Check correlation between variables, both as scatter plot and heat map.
+Check correlation between variables, both as scatter plot and heat map (get different color scheme with two colors)
 ```{r}
 MakeCorrelationPlots <- function(data.matrix){
   corr.mat <- cor(data.matrix)
   corr.values <- corr.mat; corr.values[upper.tri(corr.values, diag=T)] <- NA
   corr.values <- corr.values %>% reshape2::melt() %>% na.omit %>% transmute(which_factors=paste0(Var1,"+", Var2), correlation=value)
   pcor.scatter <- corr.values %>% ggplot(aes(x=which_factors, y=correlation))+geom_point()+theme(axis.text.x = element_text(angle = 90, hjust = 1))
-  pcor.heat <- corr.mat %>% reshape2::melt() %>% ggplot(aes(x=Var1, y=Var2, fill=value))+geom_tile()+scale_fill_continuous(high = "#132B43", low = "#56B1F7")+
+  pcor.heat <- corr.mat %>% reshape2::melt() %>% ggplot(aes(x=Var1, y=Var2, fill=value))+geom_tile()+geom_text(aes(label = round(value, 2)))+
+    scale_fill_gradient2(low = 'blue', high = 'red')+
     theme(axis.text.x = element_text(angle = 90, hjust = 1))
   return(list(pcor.scatter=pcor.scatter, pcor.heat=pcor.heat))
 }
@@ -92,8 +101,36 @@ corplot_1$pcor.scatter
 corplot_1$pcor.heat
 corplot_2$pcor.scatter
 corplot_2$pcor.heat
+
+#ggsave('/Users/Deathvoodoo/Documents/semb_int/correlation_matrix.png', corplot_1$pcor.heat)
 ```
 
+How did the area of the holes change over time again (using my annotated time points) ?
+```{r}
+pancrea_area_df <- pancrea_holes_2[c('data_set_name', 'hole_num_rep', 'hole_num_inmovie', 'hole_area_smooth', 'time_point')]
+area_time_1 <- pancrea_area_df %>% filter(data_set_name=='pos1') %>% ggplot(aes(x=time_point, y=hole_area_smooth, col=as.factor(hole_num_inmovie)))+geom_point(size=0.2, alpha=0.5)
+area_time_2 <-pancrea_area_df %>% filter(data_set_name=='pos2') %>% ggplot(aes(x=time_point, y=hole_area_smooth, col=as.factor(hole_num_inmovie)))+geom_point(size=0.2, alpha=0.5)
+area_time_3 <-pancrea_area_df %>% ggplot(aes(x=time_point, y=hole_area_smooth, col=as.factor(hole_num_inmovie)))+geom_point(size=0.2, alpha=0.5) + 
+  facet_wrap(~data_set_name, scale='free') + guides(col = guide_legend(ncol = 2))
+area_time_3
+#ggsave('/Users/Deathvoodoo/Documents/semb_int/area_time1.png', area_time_1)
+#ggsave('/Users/Deathvoodoo/Documents/semb_int/area_time2.png', area_time_2)
+#ggsave('/Users/Deathvoodoo/Documents/semb_int/area_time.png', area_time_3, width = 10)
+```
+
+Also we can check the distributions of each predictor variable.
+```{r}
+pancrea_holes_1[predictors_1] %>% pivot_longer(predictors_1, names_to = 'predictors') %>% ggplot(aes(x=value))+geom_histogram()+facet_wrap(~predictors, scale='free')
+```
+
+We may have some reservations about period, let's try to check the average period of each hole as a function of the number of data points of the hole (as a substitute for life-time)
+```{r}
+mean_period <- pancrea_holes_1 %>% group_by(hole_num_rep) %>% summarize(period_mean=mean(period), nrow_holes=as.numeric(table(hole_num_rep)))
+mean_period %>% ggplot(aes(x=as.factor(nrow_holes), y=period_mean, col=as.factor(hole_num_rep)))+geom_point()+theme(axis.text.x = element_text(angle = -90, hjust = 1))
+
+#mean_dadt <- pancrea_holes_1 %>% group_by(hole_num_rep) %>% summarize(dadt_mean=mean(dAdt), nrow_holes=as.numeric(table(hole_num_rep)), area_mean=mean(hole_area_smooth))
+#mean_dadt %>% ggplot(aes(x=area_mean, y=dadt_mean, col=as.factor(hole_num_rep)))+geom_point()+theme(axis.text.x = element_text(angle = -90, hjust = 1))
+```
 
 Now we start fitting some models. We first try all the variables. Note that we are omitting dEdt because Silja said it's not important and also numEnds_over_numCon since it's very highly correlation with numEnds
 ```{r}
@@ -160,7 +197,8 @@ output_values_random$r.squared %>% qplot
 output_values_random$r.squared.adjusted %>% qplot
 output_values_random$sum.squared.resids %>% qplot
 ```
-We compare mean values from randomized data frames with the values for the first linear model. It's a little bit better.
+
+We compare mean residual standard error, mean r squared, mean r squared adjusted and the mean sum of squared residuals from randomized data frames with the values for the first linear model. It's a little bit better.
 ```{r}
 output_values_random %>% lapply(mean) %>% unlist
 summary(linmodel_1)
@@ -322,7 +360,7 @@ We can also try to down sample to circumvent IID assumption violation
 Sampleintervals <- function(df, interval.length, offset=0){
   start.from <- 1+offset
   n <- nrow(df)
-  if(start.from>=n || interval.length >=n){
+  if(start.from >= n || interval.length >= n){
     indices <- sample(n, 1)
   } else {
     indices <- seq(start.from, n, interval.length)
@@ -381,8 +419,10 @@ summaries of the models
 linmodels_offsets %>% lapply(summary)
 ```
 
-(remember that permutation matrix cancels out in formula to linear regression)
+just a quick sanity test because I forgot why permuting doesn't change linear regression results, but ofc it's because permutation matrix cancels out in the formula
 ```{r}
 quicktest <- lm(dAdt~numCon + numEnds + period + hole_area_smooth + eccentricity + solidity, data = pancrea_holes_1[sample(1:nrow(pancrea_holes_1)), ])
 ```
+
+
 
