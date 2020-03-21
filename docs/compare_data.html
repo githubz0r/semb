@@ -405,7 +405,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-02-28
+<strong>Last updated:</strong> 2020-03-21
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -496,10 +496,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomgithubz0rsembtreefbfb7666f83298ad02c6a0bc4edceadbad69ef8dtargetblankfbfb766a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/githubz0r/semb/tree/fbfb7666f83298ad02c6a0bc4edceadbad69ef8d" target="_blank">fbfb766</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomgithubz0rsembtreebf153bc481b9e3c18244d110365af12edd631e44targetblankbf153bca"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/githubz0r/semb/tree/bf153bc481b9e3c18244d110365af12edd631e44" target="_blank">bf153bc</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomgithubz0rsembtreefbfb7666f83298ad02c6a0bc4edceadbad69ef8dtargetblankfbfb766a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomgithubz0rsembtreebf153bc481b9e3c18244d110365af12edd631e44targetblankbf153bca" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -508,11 +508,10 @@ Great! You are using Git for version control. Tracking code development and conn
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
 
 Untracked files:
+    Untracked:  analysis/.ipynb_checkpoints/
     Untracked:  analysis/first_steps.Rmd
-    Untracked:  code/data_entry_pancrea_holes.R
     Untracked:  code/for_wflow_cmds.R
 
 </code></pre>
@@ -552,6 +551,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/githubz0r/semb/blob/bf153bc481b9e3c18244d110365af12edd631e44/analysis/compare_data.Rmd" target="_blank">bf153bc</a>
+</td>
+<td>
+githubz0r
+</td>
+<td>
+2020-03-21
+</td>
+<td>
+uploading and updating scripts
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/githubz0r/semb/dc6711ce4e38eb73dc681d6718106df0786550f8/docs/compare_data.html" target="_blank">dc6711c</a>
+</td>
+<td>
+githubz0r
+</td>
+<td>
+2020-02-28
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -621,8 +654,8 @@ pancrea_holes_2 &lt;- pancrea_holes_altered[names(pancrea_holes_altered)!=&#39;h
 <h2>analysis</h2>
 <p>First some plots We just quickly visualize dAdt as a function of each predictor.</p>
 <pre class="r"><code>predictors_1 &lt;- c(&quot;numCon&quot;, &quot;numEnds&quot;, &quot;period&quot;, &quot;hole_area_smooth&quot;, &quot;eccentricity&quot;, &quot;solidity&quot;)
-predictors_2 &lt;- c(&quot;numCon&quot;, &quot;numEnds&quot;, &quot;period&quot;, &quot;hole_area_smooth&quot;, &quot;eccentricity&quot;, &quot;solidity&quot;)
-#predictors_3 &lt;- c(&quot;numCon&quot;, &quot;numEnds&quot;, &quot;period&quot;, &quot;hole_area_smooth&quot;, &quot;eccentricity&quot;, &quot;solidity&quot;, &quot;time_point&quot;)
+predictors_2 &lt;- c(&quot;numCon&quot;, &quot;numEnds&quot;, &quot;period&quot;, &quot;hole_area_smooth&quot;, &quot;eccentricity&quot;, &quot;solidity&quot;) # same as predictors 1 but originally meant to include time
+#predictors_2 &lt;- c(&quot;numCon&quot;, &quot;numEnds&quot;, &quot;period&quot;, &quot;hole_area_smooth&quot;, &quot;eccentricity&quot;, &quot;solidity&quot;, &quot;time_point&quot;)
 pancrea_1_norm &lt;- pancrea_holes_1 %&gt;% lapply(function(x){if (x[1] %&gt;% is.numeric()) {x/sd(x)} else{x}}) %&gt;% as.data.frame()
 pancrea_2_norm &lt;- pancrea_holes_2 %&gt;% lapply(function(x){if (x[1] %&gt;% is.numeric()) {x/sd(x)} else{x}}) %&gt;% as.data.frame()
 
@@ -631,66 +664,352 @@ pancrea_2_norm_long &lt;- pancrea_2_norm %&gt;% pivot_longer(cols=predictors_2, 
 
 pancrea_1_norm_long %&gt;% ggplot(aes(x=value, y=dAdt, col=predictors))+geom_point(size=0.2, alpha=0.5)</code></pre>
 <p><img src="figure/compare_data.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-1">
+Past versions of unnamed-chunk-2-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/githubz0r/semb/blob/dc6711ce4e38eb73dc681d6718106df0786550f8/docs/figure/compare_data.Rmd/unnamed-chunk-2-1.png" target="_blank">dc6711c</a>
+</td>
+<td>
+githubz0r
+</td>
+<td>
+2020-02-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>pancrea_2_norm_long %&gt;% ggplot(aes(x=value, y=dAdt, col=predictors))+geom_point(size=0.2, alpha=0.5)</code></pre>
 <p><img src="figure/compare_data.Rmd/unnamed-chunk-2-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-2">
+Past versions of unnamed-chunk-2-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-2-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/githubz0r/semb/blob/dc6711ce4e38eb73dc681d6718106df0786550f8/docs/figure/compare_data.Rmd/unnamed-chunk-2-2.png" target="_blank">dc6711c</a>
+</td>
+<td>
+githubz0r
+</td>
+<td>
+2020-02-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Now we do some PCA plots, with and without scaling the variances. We color both by hole and dataset to get an overview of how our points are lying together.</p>
-<pre class="r"><code>DoIrlbaPCA &lt;- function(data.mat, predictor.names, make.plots=T){
-  panc.pca.unscaled &lt;- irlba::prcomp_irlba(data.mat[predictor.names], n=2)
-  panc.pca.scaled &lt;- irlba::prcomp_irlba(data.mat[predictor.names], n=2, scale.=T)
+<pre class="r"><code>DoPCA &lt;- function(data.mat, predictor.names, make.plots=T, get.percent.variance=T, scale=T){
+  panc.pca &lt;- prcomp(data.mat[predictor.names], scale.=scale)
   if(make.plots){
-    panc.pca.unscaled.df &lt;- setNames(panc.pca.unscaled$x %&gt;% as.data.frame, c(&#39;PC1&#39;, &#39;PC2&#39;)) %&gt;% bind_cols(data.mat[setdiff(names(data.mat), predictor.names)])
-    panc.pca.scaled.df &lt;- setNames(panc.pca.scaled$x %&gt;% as.data.frame, c(&#39;PC1&#39;, &#39;PC2&#39;)) %&gt;% bind_cols(data.mat[setdiff(names(data.mat), predictor.names)])
-    phole.unscaled &lt;- panc.pca.unscaled.df %&gt;% ggplot(aes(x=PC1, y=PC2, col=as.factor(hole_num_rep), shape=data_set_name))+geom_point(alpha=0.5)+guides(col = guide_legend(ncol = 3))
-    phole.scaled &lt;- panc.pca.scaled.df %&gt;% ggplot(aes(x=PC1, y=PC2, col=as.factor(hole_num_rep), shape=data_set_name))+geom_point(alpha=0.5)+guides(col = guide_legend(ncol = 3))
-    pdataset.scaled &lt;- panc.pca.scaled.df %&gt;% ggplot(aes(x=PC1, y=PC2, col=data_set_name))+geom_point(alpha=0.5)+guides(col = guide_legend(ncol = 3))
+    variances &lt;- panc.pca$sdev^2
+    PC.strings &lt;- paste0(&#39;PC&#39;, &#39;&#39;, 1:length(predictor.names))
+    col.names &lt;- paste0(PC.strings, &quot;, % variance: &quot;, 100*round(variances/sum(variances), digits = 4))
+    panc.pca.df &lt;- setNames(panc.pca$x %&gt;% as.data.frame, col.names) %&gt;% bind_cols(data.mat[setdiff(names(data.mat), predictor.names)])
+    phole.scaled &lt;- panc.pca.df %&gt;% ggplot(aes(x=!!as.symbol(col.names[1]), y=!!as.symbol(col.names[2]), col=as.factor(hole_num_rep),
+                                               shape=data_set_name))+geom_point(alpha=0.5)+guides(col = guide_legend(ncol = 3))
+    pdataset.scaled &lt;- panc.pca.df %&gt;% ggplot(aes(x=!!as.symbol(col.names[1]), y=!!as.symbol(col.names[2]), col=data_set_name))+
+      geom_point(alpha=0.5)+guides(col = guide_legend(ncol = 3))
   }
-  return(list(panc.pca.unscaled=panc.pca.unscaled, panc.pca.scaled=panc.pca.scaled, phole.unscaled=phole.unscaled, phole.scaled=phole.scaled, 
-              pdataset.scaled=pdataset.scaled))
+  return(list(panc.pca=panc.pca, phole.scaled=phole.scaled, pdataset.scaled=pdataset.scaled))
 }
 
-pancrea_1_pca &lt;- DoIrlbaPCA(pancrea_holes_1, predictors_1)
-pancrea_2_pca &lt;- DoIrlbaPCA(pancrea_holes_2, predictors_2)
+pancrea_1_pca &lt;- DoPCA(pancrea_holes_1, predictors_1)
+pancrea_2_pca &lt;- DoPCA(pancrea_holes_2, predictors_2)
 
 pancrea_1_pca$phole.scaled</code></pre>
 <p><img src="figure/compare_data.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/githubz0r/semb/blob/dc6711ce4e38eb73dc681d6718106df0786550f8/docs/figure/compare_data.Rmd/unnamed-chunk-3-1.png" target="_blank">dc6711c</a>
+</td>
+<td>
+githubz0r
+</td>
+<td>
+2020-02-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>pancrea_1_pca$pdataset.scaled</code></pre>
 <p><img src="figure/compare_data.Rmd/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-2">
+Past versions of unnamed-chunk-3-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/githubz0r/semb/blob/dc6711ce4e38eb73dc681d6718106df0786550f8/docs/figure/compare_data.Rmd/unnamed-chunk-3-2.png" target="_blank">dc6711c</a>
+</td>
+<td>
+githubz0r
+</td>
+<td>
+2020-02-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>pancrea_2_pca$phole.scaled</code></pre>
 <p><img src="figure/compare_data.Rmd/unnamed-chunk-3-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-3">
+Past versions of unnamed-chunk-3-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/githubz0r/semb/blob/dc6711ce4e38eb73dc681d6718106df0786550f8/docs/figure/compare_data.Rmd/unnamed-chunk-3-3.png" target="_blank">dc6711c</a>
+</td>
+<td>
+githubz0r
+</td>
+<td>
+2020-02-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>pancrea_2_pca$pdataset.scaled</code></pre>
-<p><img src="figure/compare_data.Rmd/unnamed-chunk-3-4.png" width="672" style="display: block; margin: auto;" /> Check weights of the features in the rotation matrices</p>
+<p><img src="figure/compare_data.Rmd/unnamed-chunk-3-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-4">
+Past versions of unnamed-chunk-3-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/githubz0r/semb/blob/dc6711ce4e38eb73dc681d6718106df0786550f8/docs/figure/compare_data.Rmd/unnamed-chunk-3-4.png" target="_blank">dc6711c</a>
+</td>
+<td>
+githubz0r
+</td>
+<td>
+2020-02-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>ggsave(&#39;/Users/Deathvoodoo/Documents/semb_int/pca_hole.png&#39;, pancrea_1_pca$phole.scaled)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
+<pre class="r"><code>ggsave(&#39;/Users/Deathvoodoo/Documents/semb_int/pca_dataset.png&#39;, pancrea_1_pca$pdataset.scaled)</code></pre>
+<pre><code>Saving 7 x 5 in image</code></pre>
+<p>Check weights of the features in the rotation matrices</p>
 <pre class="r"><code>predictors_2 %&gt;% setNames(1:length(predictors_2), .)</code></pre>
 <pre><code>          numCon          numEnds           period hole_area_smooth 
                1                2                3                4 
     eccentricity         solidity 
                5                6 </code></pre>
-<pre class="r"><code>pancrea_1_pca$panc.pca.scaled$rotation</code></pre>
-<pre><code>            PC1         PC2
-[1,] -0.4144738 -0.49053188
-[2,]  0.1312448 -0.64677488
-[3,] -0.3038964 -0.02637844
-[4,] -0.5044041 -0.27287369
-[5,] -0.3329065  0.48612903
-[6,]  0.5944602 -0.17199831</code></pre>
-<pre class="r"><code>pancrea_2_pca$panc.pca.scaled$rotation</code></pre>
-<pre><code>            PC1        PC2
-[1,]  0.5228088 -0.2554301
-[2,]  0.2345789 -0.6083004
-[3,]  0.2065639  0.3559548
-[4,]  0.5514703 -0.1930589
-[5,]  0.2609432  0.5384805
-[6,] -0.5067190 -0.3328503</code></pre>
-<p>We check distribution of dAdt. Of course, for fitting a linear model (with gaussian noise) we assume that the data is normally distributed, so it better be.</p>
-<pre class="r"><code>qplot(pancrea_holes_1$dAdt)</code></pre>
-<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<pre class="r"><code>pancrea_1_pca$panc.pca$rotation</code></pre>
+<pre><code>                        PC1         PC2         PC3         PC4
+numCon           -0.4144738  0.49053188 -0.08067353  0.08576020
+numEnds           0.1312448  0.64677488 -0.23746966 -0.62105743
+period           -0.3038964  0.02637844 -0.79051662  0.42621626
+hole_area_smooth -0.5044041  0.27287369  0.38812584  0.06715059
+eccentricity     -0.3329065 -0.48612903 -0.31201869 -0.63853288
+solidity          0.5944602  0.17199831 -0.25334974  0.11418898
+                         PC5         PC6
+numCon           -0.74209386 -0.15173534
+numEnds           0.26054476  0.23338661
+period            0.30440788  0.08780756
+hole_area_smooth  0.52737600 -0.48768855
+eccentricity     -0.09934392 -0.37135254
+solidity         -0.02746487 -0.73420302</code></pre>
+<pre class="r"><code>pancrea_2_pca$panc.pca$rotation</code></pre>
+<pre><code>                        PC1        PC2         PC3         PC4         PC5
+numCon           -0.5228088 -0.2554301 -0.07125109  0.01142662 -0.80988975
+numEnds          -0.2345789 -0.6083004 -0.23217188  0.54044425  0.37759193
+period           -0.2065639  0.3559548 -0.88516007 -0.17855650  0.09803131
+hole_area_smooth -0.5514703 -0.1930589  0.11248327 -0.34771580  0.38905325
+eccentricity     -0.2609432  0.5384805  0.10287140  0.72223502 -0.00730071
+solidity          0.5067190 -0.3328503 -0.36643709  0.18269460 -0.20118911
+                         PC6
+numCon           -0.01725596
+numEnds          -0.29391147
+period           -0.07501102
+hole_area_smooth  0.61129987
+eccentricity      0.33119196
+solidity          0.65139541</code></pre>
+<p>We check distribution of dAdt visually and with shapiro wilk test. Of course, for fitting a linear model (with gaussian noise) we assume that the data is normally distributed, so it better be.</p>
+<pre class="r"><code>hist(pancrea_holes_1$dAdt, breaks = 50, prob=T)
+lines(density(pancrea_holes_1$dAdt), col = &quot;blue&quot;)</code></pre>
 <p><img src="figure/compare_data.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Check correlation between variables, both as scatter plot and heat map.</p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/githubz0r/semb/blob/dc6711ce4e38eb73dc681d6718106df0786550f8/docs/figure/compare_data.Rmd/unnamed-chunk-5-1.png" target="_blank">dc6711c</a>
+</td>
+<td>
+githubz0r
+</td>
+<td>
+2020-02-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>shapiro.test(pancrea_holes_1$dAdt)</code></pre>
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  pancrea_holes_1$dAdt
+W = 0.9189, p-value &lt; 2.2e-16</code></pre>
+<p>Check correlation between variables, both as scatter plot and heat map (get different color scheme with two colors)</p>
 <pre class="r"><code>MakeCorrelationPlots &lt;- function(data.matrix){
   corr.mat &lt;- cor(data.matrix)
   corr.values &lt;- corr.mat; corr.values[upper.tri(corr.values, diag=T)] &lt;- NA
   corr.values &lt;- corr.values %&gt;% reshape2::melt() %&gt;% na.omit %&gt;% transmute(which_factors=paste0(Var1,&quot;+&quot;, Var2), correlation=value)
   pcor.scatter &lt;- corr.values %&gt;% ggplot(aes(x=which_factors, y=correlation))+geom_point()+theme(axis.text.x = element_text(angle = 90, hjust = 1))
-  pcor.heat &lt;- corr.mat %&gt;% reshape2::melt() %&gt;% ggplot(aes(x=Var1, y=Var2, fill=value))+geom_tile()+scale_fill_continuous(high = &quot;#132B43&quot;, low = &quot;#56B1F7&quot;)+
+  pcor.heat &lt;- corr.mat %&gt;% reshape2::melt() %&gt;% ggplot(aes(x=Var1, y=Var2, fill=value))+geom_tile()+geom_text(aes(label = round(value, 2)))+
+    scale_fill_gradient2(low = &#39;blue&#39;, high = &#39;red&#39;)+
     theme(axis.text.x = element_text(angle = 90, hjust = 1))
   return(list(pcor.scatter=pcor.scatter, pcor.heat=pcor.heat))
 }
@@ -699,12 +1018,219 @@ corplot_2 &lt;- MakeCorrelationPlots(pancrea_holes_2[c(&#39;dAdt&#39;, predictor
 
 corplot_1$pcor.scatter</code></pre>
 <p><img src="figure/compare_data.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/githubz0r/semb/blob/dc6711ce4e38eb73dc681d6718106df0786550f8/docs/figure/compare_data.Rmd/unnamed-chunk-6-1.png" target="_blank">dc6711c</a>
+</td>
+<td>
+githubz0r
+</td>
+<td>
+2020-02-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>corplot_1$pcor.heat</code></pre>
 <p><img src="figure/compare_data.Rmd/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-2">
+Past versions of unnamed-chunk-6-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/githubz0r/semb/blob/dc6711ce4e38eb73dc681d6718106df0786550f8/docs/figure/compare_data.Rmd/unnamed-chunk-6-2.png" target="_blank">dc6711c</a>
+</td>
+<td>
+githubz0r
+</td>
+<td>
+2020-02-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>corplot_2$pcor.scatter</code></pre>
 <p><img src="figure/compare_data.Rmd/unnamed-chunk-6-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-3">
+Past versions of unnamed-chunk-6-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/githubz0r/semb/blob/dc6711ce4e38eb73dc681d6718106df0786550f8/docs/figure/compare_data.Rmd/unnamed-chunk-6-3.png" target="_blank">dc6711c</a>
+</td>
+<td>
+githubz0r
+</td>
+<td>
+2020-02-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>corplot_2$pcor.heat</code></pre>
 <p><img src="figure/compare_data.Rmd/unnamed-chunk-6-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-4">
+Past versions of unnamed-chunk-6-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/githubz0r/semb/blob/dc6711ce4e38eb73dc681d6718106df0786550f8/docs/figure/compare_data.Rmd/unnamed-chunk-6-4.png" target="_blank">dc6711c</a>
+</td>
+<td>
+githubz0r
+</td>
+<td>
+2020-02-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>#ggsave(&#39;/Users/Deathvoodoo/Documents/semb_int/correlation_matrix.png&#39;, corplot_1$pcor.heat)</code></pre>
+<p>How did the area of the holes change over time again (using my annotated time points) ?</p>
+<pre class="r"><code>pancrea_area_df &lt;- pancrea_holes_2[c(&#39;data_set_name&#39;, &#39;hole_num_rep&#39;, &#39;hole_num_inmovie&#39;, &#39;hole_area_smooth&#39;, &#39;time_point&#39;)]
+area_time_1 &lt;- pancrea_area_df %&gt;% filter(data_set_name==&#39;pos1&#39;) %&gt;% ggplot(aes(x=time_point, y=hole_area_smooth, col=as.factor(hole_num_inmovie)))+geom_point(size=0.2, alpha=0.5)
+area_time_2 &lt;-pancrea_area_df %&gt;% filter(data_set_name==&#39;pos2&#39;) %&gt;% ggplot(aes(x=time_point, y=hole_area_smooth, col=as.factor(hole_num_inmovie)))+geom_point(size=0.2, alpha=0.5)
+area_time_3 &lt;-pancrea_area_df %&gt;% ggplot(aes(x=time_point, y=hole_area_smooth, col=as.factor(hole_num_inmovie)))+geom_point(size=0.2, alpha=0.5) + 
+  facet_wrap(~data_set_name, scale=&#39;free&#39;) + guides(col = guide_legend(ncol = 2))
+area_time_3</code></pre>
+<p><img src="figure/compare_data.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#ggsave(&#39;/Users/Deathvoodoo/Documents/semb_int/area_time1.png&#39;, area_time_1)
+#ggsave(&#39;/Users/Deathvoodoo/Documents/semb_int/area_time2.png&#39;, area_time_2)
+#ggsave(&#39;/Users/Deathvoodoo/Documents/semb_int/area_time.png&#39;, area_time_3, width = 10)</code></pre>
+<p>Also we can check the distributions of each predictor variable.</p>
+<pre class="r"><code>pancrea_holes_1[predictors_1] %&gt;% pivot_longer(predictors_1, names_to = &#39;predictors&#39;) %&gt;% ggplot(aes(x=value))+geom_histogram()+facet_wrap(~predictors, scale=&#39;free&#39;)</code></pre>
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="figure/compare_data.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>We may have some reservations about period, let’s try to check the average period of each hole as a function of the number of data points of the hole (as a substitute for life-time)</p>
+<pre class="r"><code>mean_period &lt;- pancrea_holes_1 %&gt;% group_by(hole_num_rep) %&gt;% summarize(period_mean=mean(period), nrow_holes=as.numeric(table(hole_num_rep)))
+mean_period %&gt;% ggplot(aes(x=as.factor(nrow_holes), y=period_mean, col=as.factor(hole_num_rep)))+geom_point()+theme(axis.text.x = element_text(angle = -90, hjust = 1))</code></pre>
+<p><img src="figure/compare_data.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/githubz0r/semb/blob/dc6711ce4e38eb73dc681d6718106df0786550f8/docs/figure/compare_data.Rmd/unnamed-chunk-9-1.png" target="_blank">dc6711c</a>
+</td>
+<td>
+githubz0r
+</td>
+<td>
+2020-02-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>#mean_dadt &lt;- pancrea_holes_1 %&gt;% group_by(hole_num_rep) %&gt;% summarize(dadt_mean=mean(dAdt), nrow_holes=as.numeric(table(hole_num_rep)), area_mean=mean(hole_area_smooth))
+#mean_dadt %&gt;% ggplot(aes(x=area_mean, y=dadt_mean, col=as.factor(hole_num_rep)))+geom_point()+theme(axis.text.x = element_text(angle = -90, hjust = 1))</code></pre>
 <p>Now we start fitting some models. We first try all the variables. Note that we are omitting dEdt because Silja said it’s not important and also numEnds_over_numCon since it’s very highly correlation with numEnds</p>
 <pre class="r"><code>cor(pancrea_holes_1$numEnds, pancrea_holes_1$numEnds_over_numCon)</code></pre>
 <pre><code>[1] 0.9663755</code></pre>
@@ -714,11 +1240,11 @@ linmodel_2 &lt;- lm(dAdt~numCon + numEnds + period + hole_area_smooth + eccentri
 linmodel_time &lt;- lm(dAdt~numCon + numEnds + period + hole_area_smooth + eccentricity + solidity + time_point, data = pancrea_holes_2)</code></pre>
 <p>Diagnostic plots of the models. Things definitely do not look iid/evenly distribution noise/homoskedastic</p>
 <pre class="r"><code>plot(linmodel_1)</code></pre>
-<p><img src="figure/compare_data.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-9-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-9-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/compare_data.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-12-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-12-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-12-4.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>plot(linmodel_2)</code></pre>
-<p><img src="figure/compare_data.Rmd/unnamed-chunk-9-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-9-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-9-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-9-8.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/compare_data.Rmd/unnamed-chunk-12-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-12-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-12-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-12-8.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>plot(linmodel_time)</code></pre>
-<p><img src="figure/compare_data.Rmd/unnamed-chunk-9-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-9-10.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-9-11.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-9-12.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/compare_data.Rmd/unnamed-chunk-12-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-12-10.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-12-11.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-12-12.png" width="672" style="display: block; margin: auto;" /></p>
 <p>We print some summaries of the models. This gives some various statistical info, such as e.g. weight estimates, p values when doing some kind of t-test of the weights (with null hypothesis that they are equal to zero). This gives similar values to doing a likelihood ratio test where the nested model lacks that coefficient. Note that the models are all complete trash, judging by the R^2 values.</p>
 <pre class="r"><code>summary(linmodel_1)</code></pre>
 <pre><code>
@@ -835,21 +1361,22 @@ output_values_random &lt;-random_results[[1]] %&gt;% names %&gt;% lapply(functio
 
 output_values_random$residual.standard.error %&gt;% qplot</code></pre>
 <pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="figure/compare_data.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/compare_data.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>output_values_random$r.squared %&gt;% qplot</code></pre>
 <pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="figure/compare_data.Rmd/unnamed-chunk-13-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/compare_data.Rmd/unnamed-chunk-16-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>output_values_random$r.squared.adjusted %&gt;% qplot</code></pre>
 <pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="figure/compare_data.Rmd/unnamed-chunk-13-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/compare_data.Rmd/unnamed-chunk-16-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>output_values_random$sum.squared.resids %&gt;% qplot</code></pre>
 <pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="figure/compare_data.Rmd/unnamed-chunk-13-4.png" width="672" style="display: block; margin: auto;" /> We compare mean values from randomized data frames with the values for the first linear model. It’s a little bit better.</p>
+<p><img src="figure/compare_data.Rmd/unnamed-chunk-16-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>We compare mean residual standard error, mean r squared, mean r squared adjusted and the mean sum of squared residuals from randomized data frames with the values for the first linear model. It’s a little bit better.</p>
 <pre class="r"><code>output_values_random %&gt;% lapply(mean) %&gt;% unlist</code></pre>
 <pre><code>residual.standard.error               r.squared      r.squared.adjusted 
-           4.202383e+01            2.116853e-03            1.621355e-04 
+           4.202395e+01            2.111187e-03            1.564589e-04 
      sum.squared.resids 
-           5.409268e+06 </code></pre>
+           5.409299e+06 </code></pre>
 <pre class="r"><code>summary(linmodel_1)</code></pre>
 <pre><code>
 Call:
@@ -1399,7 +1926,83 @@ F-statistic: 63.65 on 12 and 3057 DF,  p-value: &lt; 2.2e-16</code></pre>
 <pre class="r"><code>BIC(linmodel_interaction_leaps)</code></pre>
 <pre><code>[1] 31092.3</code></pre>
 <pre class="r"><code>plot(linmodel_interaction_leaps)</code></pre>
-<p><img src="figure/compare_data.Rmd/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-24-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-24-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-24-4.png" width="672" style="display: block; margin: auto;" /> Yeah, improved adjusted R squared fo sho.</p>
+<p><img src="figure/compare_data.Rmd/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-27-1">
+Past versions of unnamed-chunk-27-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-27-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/githubz0r/semb/blob/dc6711ce4e38eb73dc681d6718106df0786550f8/docs/figure/compare_data.Rmd/unnamed-chunk-27-1.png" target="_blank">dc6711c</a>
+</td>
+<td>
+githubz0r
+</td>
+<td>
+2020-02-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/compare_data.Rmd/unnamed-chunk-27-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-27-2">
+Past versions of unnamed-chunk-27-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-27-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/githubz0r/semb/blob/dc6711ce4e38eb73dc681d6718106df0786550f8/docs/figure/compare_data.Rmd/unnamed-chunk-27-2.png" target="_blank">dc6711c</a>
+</td>
+<td>
+githubz0r
+</td>
+<td>
+2020-02-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/compare_data.Rmd/unnamed-chunk-27-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-27-4.png" width="672" style="display: block; margin: auto;" /> Yeah, improved adjusted R squared fo sho.</p>
 <p>Btw, which rows were removed by na.omit?</p>
 <pre class="r"><code>removed_rows_bool &lt;- pancrea_holes_all[names(pancrea_holes_all)!=&#39;hole_area_raw&#39;] %&gt;% apply(1, function(row){
   return((row %&gt;% sapply(function(x){is.na(x)}) %&gt;% sum())&gt;0)
@@ -1453,17 +2056,128 @@ Squarederror(split(pancrea_holes_1$numEnds, pancrea_holes_1$hole_num_rep)$`22`, 
 <pre class="r"><code>error_pancrea &lt;- CalcError(pancrea_holes_1, pancrea_holes_2, c(&#39;numCon&#39;, &#39;numEnds&#39;))
 error_pancrea$errors.df %&gt;% ggplot((aes(x=as.factor(as.numeric(hole)), y=zeroone, col=compared_factor)))+
   theme(axis.text.x = element_text(angle = -90, hjust = 1))+geom_jitter()</code></pre>
-<p><img src="figure/compare_data.Rmd/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/compare_data.Rmd/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>error_pancrea$errors.df %&gt;% ggplot((aes(x=as.factor(as.numeric(hole)), y=squarederror, col=compared_factor)))+
   theme(axis.text.x = element_text(angle = -90, hjust = 1))+geom_jitter()</code></pre>
-<p><img src="figure/compare_data.Rmd/unnamed-chunk-27-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/compare_data.Rmd/unnamed-chunk-30-2.png" width="672" style="display: block; margin: auto;" /></p>
 <p>quick plot of fitted vs real values for the various models</p>
 <pre class="r"><code>plot(linmodel_1$fitted.values~pancrea_holes_1$dAdt)</code></pre>
-<p><img src="figure/compare_data.Rmd/unnamed-chunk-28-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/compare_data.Rmd/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-31-1">
+Past versions of unnamed-chunk-31-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-31-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/githubz0r/semb/blob/dc6711ce4e38eb73dc681d6718106df0786550f8/docs/figure/compare_data.Rmd/unnamed-chunk-31-1.png" target="_blank">dc6711c</a>
+</td>
+<td>
+githubz0r
+</td>
+<td>
+2020-02-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot(step_mass_squared_bi$fitted.values~pancrea_holes_1$dAdt)</code></pre>
-<p><img src="figure/compare_data.Rmd/unnamed-chunk-28-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/compare_data.Rmd/unnamed-chunk-31-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-31-2">
+Past versions of unnamed-chunk-31-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-31-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/githubz0r/semb/blob/dc6711ce4e38eb73dc681d6718106df0786550f8/docs/figure/compare_data.Rmd/unnamed-chunk-31-2.png" target="_blank">dc6711c</a>
+</td>
+<td>
+githubz0r
+</td>
+<td>
+2020-02-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot(linmodel_interaction_leaps$fitted.values~pancrea_holes_1$dAdt)</code></pre>
-<p><img src="figure/compare_data.Rmd/unnamed-chunk-28-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/compare_data.Rmd/unnamed-chunk-31-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-31-3">
+Past versions of unnamed-chunk-31-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-31-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/githubz0r/semb/blob/dc6711ce4e38eb73dc681d6718106df0786550f8/docs/figure/compare_data.Rmd/unnamed-chunk-31-3.png" target="_blank">dc6711c</a>
+</td>
+<td>
+githubz0r
+</td>
+<td>
+2020-02-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Let’s also just check the correlations</p>
 <pre class="r"><code>cor(linmodel_1$fitted.values, pancrea_holes_1$dAdt)</code></pre>
 <pre><code>[1] 0.2692386</code></pre>
@@ -1475,7 +2189,7 @@ error_pancrea$errors.df %&gt;% ggplot((aes(x=as.factor(as.numeric(hole)), y=zero
 <pre class="r"><code>Sampleintervals &lt;- function(df, interval.length, offset=0){
   start.from &lt;- 1+offset
   n &lt;- nrow(df)
-  if(start.from&gt;=n || interval.length &gt;=n){
+  if(start.from &gt;= n || interval.length &gt;= n){
     indices &lt;- sample(n, 1)
   } else {
     indices &lt;- seq(start.from, n, interval.length)
@@ -1493,7 +2207,7 @@ Makedownsampled &lt;- function(df, interval.length, split.by=&#39;hole_num_rep&#
 downsampled_df &lt;- Makedownsampled(pancrea_holes_1, 5, &#39;hole_num_rep&#39;)
 linmodel_downsampled &lt;- lm(dAdt~numCon + numEnds + period + hole_area_smooth + eccentricity + solidity, data = downsampled_df)</code></pre>
 <pre class="r"><code>plot(linmodel_downsampled)</code></pre>
-<p><img src="figure/compare_data.Rmd/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-31-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-31-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-31-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/compare_data.Rmd/unnamed-chunk-34-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-34-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-34-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-34-4.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>summary(linmodel_downsampled)</code></pre>
 <pre><code>
 Call:
@@ -1521,7 +2235,7 @@ Multiple R-squared:  0.07018,   Adjusted R-squared:  0.06109
 F-statistic: 7.724 on 6 and 614 DF,  p-value: 5.08e-08</code></pre>
 <p>Things look less fucked, but we have less statistical power now. Quickly check pred vs true plot and correlation. The results are less nighmarish looking but clearly linear model is insufficient.</p>
 <pre class="r"><code>plot(linmodel_downsampled$fitted.values~downsampled_df$dAdt)</code></pre>
-<p><img src="figure/compare_data.Rmd/unnamed-chunk-33-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/compare_data.Rmd/unnamed-chunk-36-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>cor(linmodel_downsampled$fitted.values, downsampled_df$dAdt)</code></pre>
 <pre><code>[1] 0.2649125</code></pre>
 <p>We can try different offsets during the sampling (sampling 1 random point from the hole if offset &gt;= n_hole)</p>
@@ -1538,7 +2252,7 @@ linmodels_offsets &lt;- dfs_offsets %&gt;% lapply(function(x){
 <pre class="r"><code>offset_residplots &lt;- linmodels_offsets %&gt;% lapply(function(x){
   return(plot(x, which=c(1,1)))
 })</code></pre>
-<p><img src="figure/compare_data.Rmd/unnamed-chunk-35-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-35-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-35-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-35-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-35-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-35-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/compare_data.Rmd/unnamed-chunk-38-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-38-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-38-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-38-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-38-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/compare_data.Rmd/unnamed-chunk-38-6.png" width="672" style="display: block; margin: auto;" /></p>
 <p>summaries of the models</p>
 <pre class="r"><code>linmodels_offsets %&gt;% lapply(summary)</code></pre>
 <pre><code>[[1]]
@@ -1699,7 +2413,7 @@ solidity          1.323e+02  1.382e+02   0.957    0.341
 Residual standard error: 42.49 on 100 degrees of freedom
 Multiple R-squared:  0.06367,   Adjusted R-squared:  0.007489 
 F-statistic: 1.133 on 6 and 100 DF,  p-value: 0.3486</code></pre>
-<p>(remember that permutation matrix cancels out in formula to linear regression)</p>
+<p>just a quick sanity test because I forgot why permuting doesn’t change linear regression results, but ofc it’s because permutation matrix cancels out in the formula</p>
 <pre class="r"><code>quicktest &lt;- lm(dAdt~numCon + numEnds + period + hole_area_smooth + eccentricity + solidity, data = pancrea_holes_1[sample(1:nrow(pancrea_holes_1)), ])</code></pre>
 <br>
 <p>
